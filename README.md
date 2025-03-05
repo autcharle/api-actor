@@ -15,7 +15,17 @@
   - DATABASE_PASSWORD=<connected_db_password>
 - Save and now you're ready to run the backend server
 
-### Running server
+### Running server on port 5000
 
 - Run a command in terminal
   > npm run start
+
+### API specs
+
+| Method | Endpoint       | Description                                        |
+| ------ | -------------- | -------------------------------------------------- |
+| GET    | /v1/actors     | retrieve list of all actors                        |
+| GET    | /v1/actors/:id | retrieve details of an actor with id               |
+| POST   | /v1/actors     | add an actor with firstName and lastName           |
+| PUT    | /v1/actors/:id | update firstName and lastName of an existing actor |
+| DELETE | /v1/actors/:id | delete an existing actor with id                   |
