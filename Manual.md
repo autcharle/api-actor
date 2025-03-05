@@ -17,6 +17,11 @@
 
 - ExpressJS
 
+### Prerequisite
+
+- MySQL Server is running
+- Data is available in database
+
 ### Step-by-step tutorial
 
 #### Create an expressJS server
@@ -107,10 +112,10 @@
         import "dotenv/config";
 
         const sequelize = new Sequelize(
-        process.env.DATABASE_NAME,
-        process.env.DATABASE_USER,
-        process.env.DATABASE_PASSWORD,
-        { dialect: "mysql", host: process.env.DATABASE_HOST }
+            process.env.DATABASE_NAME,
+            process.env.DATABASE_USER,
+            process.env.DATABASE_PASSWORD,
+            { dialect: "mysql", host: process.env.DATABASE_HOST }
         );
 
         export default sequelize;
@@ -124,26 +129,26 @@
         "Actor",
         {
             actorId: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            field: "actor_id",
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                field: "actor_id",
             },
             firstName: {
-            type: DataTypes.STRING(45),
-            primaryKey: false,
-            field: "first_name",
+                type: DataTypes.STRING(45),
+                primaryKey: false,
+                field: "first_name",
             },
             lastName: {
-            type: DataTypes.STRING(45),
-            primaryKey: false,
-            field: "last_name",
+                type: DataTypes.STRING(45),
+                primaryKey: false,
+                field: "last_name",
             },
             lastUpdate: {
-            type: DataTypes.DATE,
-            primaryKey: false,
-            defaultValue: DataTypes.NOW,
-            field: "last_update",
+                type: DataTypes.DATE,
+                primaryKey: false,
+                defaultValue: DataTypes.NOW,
+                field: "last_update",
             },
         },
         {
@@ -188,14 +193,14 @@
 - Add to _server.js_
 
         server.get("/v1/actor/:id", async (req, res) => {
-        const id = parseInt(req.params.id);
-        const data = await models.Actor.findByPk(id);
-        if (!data) {
-            return res
-            .status(404)
-            .json({ errorId: "API-404", message: "Actor not found" });
-        }
-        res.json(data);
+            const id = parseInt(req.params.id);
+            const data = await models.Actor.findByPk(id);
+            if (!data) {
+                return res
+                .status(404)
+                .json({ errorId: "API-404", message: "Actor not found" });
+            }
+            res.json(data);
         });
 
 - Restart server and visit "http://localhost:5000/v1/actors/<:id>"
@@ -214,29 +219,29 @@
   - Create an actor API (POST)
 
         server.post("/v1/actors", async (req, res) => {
-        const { firstName, lastName } = req.body;
+            const { firstName, lastName } = req.body;
 
-        if (!firstName || !lastName) {
-            return res.status(200).json(
-            new Response({
-                data: null,
-                errors: [
-                new Error({
-                    errorId: "API-400",
-                    message: "Missing first name or last name",
-                }),
-                ],
-            })
-            );
-        }
+            if (!firstName || !lastName) {
+                return res.status(200).json(
+                new Response({
+                    data: null,
+                    errors: [
+                    new Error({
+                        errorId: "API-400",
+                        message: "Missing first name or last name",
+                    }),
+                    ],
+                })
+                );
+            }
 
-        const data = await models.Actor.create({
-            firstName: firstName,
-            lastName: lastName,
-            lastUpdate: Date.now(),
-        });
+            const data = await models.Actor.create({
+                firstName: firstName,
+                lastName: lastName,
+                lastUpdate: Date.now(),
+            });
 
-        return res.status(201).json(new Response({ data, errors: null }));
+            return res.status(201).json(new Response({ data, errors: null }));
         });
 
   - Important: Above code using defined class **Response** and **Error**, add 2 files
