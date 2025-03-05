@@ -1,10 +1,14 @@
 import express from "express";
 import db from "./utils/database.js";
 import Actor from "./model/Actor.js";
+import sequelize from "./utils/helper.js";
+import initModels from "./models/init-models.js";
 import bodyParser from "body-parser";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import cors from "cors";
+
+const models = initModels(sequelize);
 
 const server = express();
 
@@ -23,7 +27,7 @@ server.get("/v1/actors", async (req, res) => {
 
 server.get("/v1/actor/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const data = await Actor.findByPk(id);
+  const data = await models.Actor.findByPk(id);
   if (!data) {
     return res
       .status(404)
@@ -34,7 +38,7 @@ server.get("/v1/actor/:id", async (req, res) => {
 
 server.get("/v1/actors/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const data = await Actor.findByPk(id);
+  const data = await models.Actor.findByPk(id);
   if (!data) {
     return res.status(200).json(
       new Response({
@@ -68,7 +72,7 @@ server.post("/v1/actors", async (req, res) => {
     );
   }
 
-  const data = await Actor.create({
+  const data = await models.Actor.create({
     firstName: firstName,
     lastName: lastName,
     lastUpdate: Date.now(),
@@ -79,7 +83,7 @@ server.post("/v1/actors", async (req, res) => {
 
 server.delete("/v1/actors/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const data = await Actor.findByPk(id);
+  const data = await models.Actor.findByPk(id);
 
   if (data) {
     data.destroy();
@@ -117,7 +121,7 @@ server.put("/v1/actors/:id", async (req, res) => {
     );
   }
 
-  const data = await Actor.findByPk(id);
+  const data = await models.Actor.findByPk(id);
 
   if (!data) {
     return res.status(200).json(
