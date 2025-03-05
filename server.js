@@ -4,10 +4,12 @@ import Actor from "./model/Actor.js";
 import bodyParser from "body-parser";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
+import cors from "cors";
 
 const server = express();
 
 server.use(bodyParser.json());
+server.use(cors());
 
 server.get("/", async (req, res) => {
   const data = await db.execute("SELECT first_name, last_name FROM actor");
