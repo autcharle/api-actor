@@ -8,11 +8,33 @@ import filmRoutes from "./routes/filmRoutes.js";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const server = express();
 
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Actor API Documentation",
+      version: "1.0.0",
+      description: "API documentation for Actor management system",
+    },
+    servers: [
+      {
+        url: "http://localhost:8000",
+        description: "Development server",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
 server.use(bodyParser.json());
 server.use(cors());
+server.use("/v1/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 server.get("/", async (req, res) => {
   const data = await db.execute("SELECT first_name, last_name FROM actor");
