@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
-    "generate:models": "sequelize-auto -h %npm_config_HOST% -d %npm_config_DB% -u %npm_config_USER% -x %npm_config_PASS% -p 3306  --dialect mysql -o './models' -l esm --cm p --cp c --cf p -t actor"
+    "generate-models:win": "sequelize-auto -h %npm_config_host% -d %npm_config_db% -u %npm_config_user% -x %npm_config_pass% -p 3306  --dialect mysql -o './models' -l esm --cm p --cp c --cf p -t actor film",
+    "generate-models": "sequelize-auto -h $npm_config_host -d $npm_config_db -u $npm_config_user -x $npm_config_pass -p 3306  --dialect mysql -o './models' -l esm --cm p --cp c --cf p -t actor film"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
+    "nodemon": "^3.1.9",
     "sequelize-auto": "^0.8.8"
   }
 }

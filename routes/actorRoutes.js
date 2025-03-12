@@ -2,12 +2,12 @@ import express from "express";
 import { ActorController } from "../controllers/actorController.js";
 
 const router = express.Router();
-// const actorController = new ActorController();
+const actorController = new ActorController();
 
-router.get("/", ActorController.getAllActors.bind(ActorController));
-router.get("/:id", ActorController.getActorById.bind(ActorController));
-router.post("/", ActorController.createActor.bind(ActorController));
-router.delete("/:id", ActorController.deteleActor.bind(ActorController));
-router.put(":/id", ActorController.updateActor.bind(ActorController));
+router.get("/", actorController.getAllActors);
+router.get("/:id", actorController.getActorById);
+router.post("/", actorController.createActor);
+router.delete("/:id", actorController.deteleActor);
+router.put(":/id", actorController.updateActor);
 
 export default router;
