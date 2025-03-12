@@ -2,10 +2,12 @@ import _sequelize from "sequelize";
 const DataTypes = _sequelize.DataTypes;
 import _Actor from  "./Actor.js";
 import _Film from  "./Film.js";
+import _Language from  "./Language.js";
 
 export default function initModels(sequelize) {
   const Actor = _Actor.init(sequelize, DataTypes);
   const Film = _Film.init(sequelize, DataTypes);
+  const Language = _Language.init(sequelize, DataTypes);
 
   Film.belongsTo(Language, { as: "language", foreignKey: "languageId"});
   Language.hasMany(Film, { as: "films", foreignKey: "languageId"});
@@ -15,5 +17,6 @@ export default function initModels(sequelize) {
   return {
     Actor,
     Film,
+    Language,
   };
 }

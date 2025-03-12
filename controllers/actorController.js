@@ -1,8 +1,10 @@
 import sequelize from "../utils/helper.js";
 import initModels from "../models/init-models.js";
 import { Response } from "../types/Response.js";
-import { Error } from "../types/Error.js";
-import { API_ERROR, ERROR } from "../constants/error.js";
+import { ERROR } from "../constants/error.js";
+import { handleError } from "../middleware/handleError.js";
+import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
+import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
 
 const models = initModels(sequelize);
 
@@ -13,9 +15,7 @@ export class ActorController {
     this.createActor = this.createActor.bind(this);
     this.deteleActor = this.deteleActor.bind(this);
     this.updateActor = this.updateActor.bind(this);
-    this.handleError = this.handleError.bind(this);
-    this.notFoundResponse = this.notFoundResponse.bind(this);
-    this.invalidInputResponse = this.invalidInputResponse.bind(this);
+    this.validateActorInputs = this.validateActorInputs.bind(this);
   }
 
   async getAllActors(req, res) {
@@ -23,7 +23,7 @@ export class ActorController {
       const data = await models.Actor.findAll();
       return res.json(new Response({ data, errors: null }));
     } catch (error) {
-      return this.handleError(res, error.message);
+      return handleError(res, error.message);
     }
   }
 
@@ -33,11 +33,11 @@ export class ActorController {
       const data = await models.Actor.findByPk(id);
 
       if (!data) {
-        return this.notFoundResponses(res, ERROR.NOT_FOUND_ACTOR);
+        return notFoundResponse(res, ERROR.NOT_FOUND_ACTOR);
       }
       return res.status(200).json(new Response({ data, errors: null }));
     } catch (error) {
-      return this.handleError(res, error.message);
+      return handleError(res, error.message);
     }
   }
 
@@ -45,7 +45,7 @@ export class ActorController {
     try {
       const { firstName, lastName } = req.body;
       if (!this.validateActorInputs(firstName, lastName)) {
-        return this.invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
+        return invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
       }
 
       const data = await models.Actor.create({
@@ -56,7 +56,7 @@ export class ActorController {
 
       return res.status(201).json(new Response({ data, errors: null }));
     } catch (error) {
-      return this.handleError(res, error.message);
+      return handleError(res, error.message);
     }
   }
 
@@ -70,9 +70,9 @@ export class ActorController {
         return res.status(200).json(new Response({ data, errors: null }));
       }
 
-      return this.notFoundResponse(res, ERROR.DELETING_NOT_FOUND_ACTOR);
+      return notFoundResponse(res, ERROR.DELETING_NOT_FOUND_ACTOR);
     } catch (error) {
-      return this.handleError(res, error.message);
+      return handleError(res, error.message);
     }
   }
 
@@ -82,70 +82,26 @@ export class ActorController {
       const { firstName, lastName } = req.body;
 
       if (!this.validateActorInputs(firstName, lastName)) {
-        return this.invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
+        return invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
       }
 
-      const data = await models.Actor.findByPk(id);
+      const actor = await models.Actor.findByPk(id);
 
-      if (!data) {
-        return this.notFoundResponse(res, ERROR.UPDATING_NOT_FOUND_ACTOR);
+      if (!actor) {
+        return notFoundResponse(res, ERROR.UPDATING_NOT_FOUND_ACTOR);
       }
 
-      data.firstName = firstName;
-      data.lastName = lastName;
-      data.lastUpdate = Date.now();
-      data.save();
+      const updateData = { ...req.body, lastUpdate: new Date() };
+      const data = await actor.update(updateData);
 
       return res.status(200).json(new Response({ data, errors: null }));
     } catch (error) {
-      return this.handleError(res, error.message);
+      return handleError(res, error.message);
     }
   }
 
-  // Helper methods
+  // Client validation methods
   validateActorInputs(firstName, lastName) {
     return firstName && lastName;
-  }
-
-  invalidInputResponse(res, msg) {
-    return res.status(200).json(
-      new Response({
-        data: null,
-        errors: [
-          new Error({
-            errorId: API_ERROR.INVALID_INPUT,
-            message: msg,
-          }),
-        ],
-      })
-    );
-  }
-
-  handleError(res, msg) {
-    return res.status(500).json(
-      new Response({
-        data: null,
-        errors: [
-          new Error({
-            errorId: API_ERROR.INTERNAL_SERVER_ERROR,
-            message: msg,
-          }),
-        ],
-      })
-    );
-  }
-
-  notFoundResponse(res, msg) {
-    return res.status(200).json(
-      new Response({
-        data: null,
-        errors: [
-          new Error({
-            errorId: API_ERROR.NOT_FOUND,
-            message: msg,
-          }),
-        ],
-      })
-    );
   }
 }
