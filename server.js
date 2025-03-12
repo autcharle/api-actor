@@ -4,6 +4,7 @@ import db from "./utils/database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import actorRoutes from "./routes/actorRoutes.js";
+import filmRoutes from "./routes/filmRoutes.js";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
@@ -19,7 +20,9 @@ server.get("/", async (req, res) => {
 });
 
 const ACTOR_URI = process.env.ACTOR_URI || "/v1/actors";
+const FILM_URI = process.env.FILM_URI || "/v1/films";
 server.use(ACTOR_URI, actorRoutes);
+server.use(FILM_URI, filmRoutes);
 
 // Error handling middleware
 server.use((err, res, req, next) => {

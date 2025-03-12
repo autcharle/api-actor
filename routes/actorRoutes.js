@@ -2,12 +2,12 @@ import express from "express";
 import { ActorController } from "../controllers/actorController.js";
 
 const router = express.Router();
-const actorController = new ActorController();
+const controller = new ActorController();
 
-router.get("/", actorController.getAllActors);
-router.get("/:id", actorController.getActorById);
-router.post("/", actorController.createActor);
-router.delete("/:id", actorController.deteleActor);
-router.put(":/id", actorController.updateActor);
+router.get("/", controller.getAllActors);
+router.get("/:id", controller.getActorById);
+router.post("/", controller.createActor);
+router.delete("/:id", controller.deteleActor);
+router.put("/:id", controller.updateActor);
 
 export default router;
