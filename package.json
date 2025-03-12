@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "generate:models": "sequelize-auto -h %npm_config_HOST% -d %npm_config_DB% -u %npm_config_USER% -x %npm_config_PASS% -p 3306  --dialect mysql -o './models' -l esm --cm p --cp c --cf p -t actor"
   },
   "author": "",
