@@ -10,33 +10,21 @@ import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import { swaggerConfig } from "./swagger/swagger.config.js";
+import fs from "fs";
+import yaml from "yamljs";
 
 const server = express();
 const PORT = process.env.PORT || 3000;
 
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Sakila API Documentation",
-      version: "1.0.0",
-      description: "API documentation for Film rental store management system",
-    },
-    servers: [
-      {
-        url: `http://localhost:${PORT}`,
-        description: "Development server",
-      },
-    ],
-  },
-  apis: ["./routes/*.js"],
-};
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
+const swaggerDocs = yaml.parse(
+  fs.readFileSync("./api/api-actor.swagger.yaml", "utf8")
+);
 
 server.use(bodyParser.json());
 server.use(cors());
 if (process.env.NODE_ENV === "development") {
-  server.use("/v1/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+  server.use("/v1/swagger-api", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
 
 server.get("/", async (req, res) => {
@@ -66,5 +54,6 @@ server.use((err, res, req, next) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Swagger API documentation available at /v1/swagger-api`);
 });
