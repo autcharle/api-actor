@@ -11,11 +11,11 @@ const controller = new FilmController();
  *      Film:
  *          type: object
  *          required:
- *          - title
+ *              - title
  *          properties:
  *              filmId:
- *                  type: integer
- *                  description: ID of the film
+ *                 type: integer
+ *                 description: Auto-generated ID of the film
  *              title:
  *                  type: string
  *                  description: Title of the film
@@ -23,10 +23,14 @@ const controller = new FilmController();
  *          type: object
  *          required:
  *              - title
+ *              - languageId
  *          properties:
  *              title:
  *                  type: string
  *                  description: Title of the film
+ *              languageId:
+ *                 type: integer
+ *                 description: Language ID of the film
  *      Error:
  *          type: object
  *          required:
@@ -80,7 +84,7 @@ router.get("/", controller.getAllFilms);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Film'
+ *               $ref: '#/components/schemas/FilmInput'
  *       404:
  *          description: Film not found
  *          content:
@@ -101,7 +105,7 @@ router.get("/:id", controller.getFilmById);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Film'
+ *             $ref: '#/components/schemas/FilmInput'
  *     responses:
  *          201:
  *              description: Film created successfully
