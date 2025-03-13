@@ -12,18 +12,19 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
 const server = express();
+const PORT = process.env.PORT || 3000;
 
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Actor API Documentation",
+      title: "Sakila API Documentation",
       version: "1.0.0",
-      description: "API documentation for Actor management system",
+      description: "API documentation for Film rental store management system",
     },
     servers: [
       {
-        url: "http://localhost:8000",
+        url: `http://localhost:${PORT}`,
         description: "Development server",
       },
     ],
@@ -34,7 +35,9 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 server.use(bodyParser.json());
 server.use(cors());
-server.use("/v1/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+if (process.env.NODE_ENV === "development") {
+  server.use("/v1/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+}
 
 server.get("/", async (req, res) => {
   const data = await db.execute("SELECT first_name, last_name FROM actor");
@@ -62,7 +65,6 @@ server.use((err, res, req, next) => {
   );
 });
 
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
