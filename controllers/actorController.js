@@ -34,26 +34,6 @@ export class ActorController {
     }
   }
 
-   /**
-   * @swagger
-   * /actors:
-   *   get:
-   *     summary: Lấy danh sách tất cả các diễn viên
-   *     tags: [Actors]
-   *     responses:
-   *       200:
-   *         description: Thành công, trả về danh sách diễn viên
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 data:
-   *                   type: array
-   *                   items:
-   *                     $ref: '#/components/schemas/Actor'
-   */
-
   async getAllActors(req, res) {
     try {
       const data = await models.Actor.findAll();
@@ -62,30 +42,6 @@ export class ActorController {
       return handleError(res, error.message);
     }
   }
-
-  /**
-   * @swagger
-   * /actors/{id}:
-   *   get:
-   *     summary: Lấy thông tin một diễn viên theo ID
-   *     tags: [Actors]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: ID của diễn viên cần tìm
-   *         schema:
-   *           type: integer
-   *     responses:
-   *       200:
-   *         description: Thành công, trả về thông tin diễn viên
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Actor'
-   *       404:
-   *         description: Không tìm thấy diễn viên
-   */
 
   async getActorById(req, res) {
     try {
@@ -108,32 +64,6 @@ export class ActorController {
     }
   }
 
-   /**
-   * @swagger
-   * /actors:
-   *   post:
-   *     summary: Thêm mới một diễn viên
-   *     tags: [Actors]
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               firstName:
-   *                 type: string
-   *                 example: "John"
-   *               lastName:
-   *                 type: string
-   *                 example: "Doe"
-   *     responses:
-   *       201:
-   *         description: Thành công, diễn viên đã được tạo
-   *       400:
-   *         description: Dữ liệu đầu vào không hợp lệ
-   */
-
   async createActor(req, res) {
     try {
       const validation = this.validateRequest(actorSchema.create, req.body);
@@ -153,26 +83,6 @@ export class ActorController {
       return handleError(res, error.message);
     }
   }
-
-  /**
-   * @swagger
-   * /actors/{id}:
-   *   delete:
-   *     summary: Xóa một diễn viên
-   *     tags: [Actors]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: ID của diễn viên cần xóa
-   *         schema:
-   *           type: integer
-   *     responses:
-   *       200:
-   *         description: Thành công, diễn viên đã bị xóa
-   *       404:
-   *         description: Không tìm thấy diễn viên
-   */
 
   async deleteActor(req, res) {
     try {
@@ -195,39 +105,6 @@ export class ActorController {
       return handleError(res, error.message);
     }
   }
-
-   /**
-   * @swagger
-   * /actors/{id}:
-   *   put:
-   *     summary: Cập nhật thông tin một diễn viên
-   *     tags: [Actors]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         description: ID của diễn viên cần cập nhật
-   *         schema:
-   *           type: integer
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               firstName:
-   *                 type: string
-   *                 example: "John"
-   *               lastName:
-   *                 type: string
-   *                 example: "Doe"
-   *     responses:
-   *       200:
-   *         description: Thành công, diễn viên đã được cập nhật
-   *       404:
-   *         description: Không tìm thấy diễn viên
-   */
 
   async updateActor(req, res) {
     try {

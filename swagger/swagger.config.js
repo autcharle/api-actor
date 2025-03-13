@@ -8,10 +8,6 @@ export const swaggerConfig = {
       title: "Sakila API Documentation",
       version: "1.0.0",
       description: "API documentation for Film rental store management system",
-      contacts: {
-        name: "Tuyen Tran",
-        email: "trthtuyen99@gmail.com",
-      },
     },
     servers: [
       {
