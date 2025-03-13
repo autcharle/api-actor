@@ -67,7 +67,7 @@ router.get("/", controller.getAllActors);
  *        schema:
  *          type: string
  *        required: true
- *        desription: Actor ID
+ *        description: Actor ID
  *      responses:
  *          200:
  *              description: Actor found
@@ -124,7 +124,7 @@ router.post("/", controller.createActor);
  *        schema:
  *          type: string
  *        required: true
- *        desription: Actor ID
+ *        description: Actor ID
  *      responses:
  *          200:
  *              description: Actor deleted successfully
@@ -139,7 +139,7 @@ router.post("/", controller.createActor);
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
  */
-router.delete("/:id", controller.deteleActor);
+router.delete("/:id", controller.deleteActor);
 
 /**
  * @swagger
@@ -153,7 +153,7 @@ router.delete("/:id", controller.deteleActor);
  *        schema:
  *          type: string
  *        required: true
- *        desription: Actor ID
+ *        description: Actor ID
  *      requestBody:
  *        required: true
  *        content:

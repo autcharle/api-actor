@@ -13,7 +13,7 @@ export class ActorController {
     this.getAllActors = this.getAllActors.bind(this);
     this.getActorById = this.getActorById.bind(this);
     this.createActor = this.createActor.bind(this);
-    this.deteleActor = this.deteleActor.bind(this);
+    this.deleteActor = this.deleteActor.bind(this);
     this.updateActor = this.updateActor.bind(this);
     this.validateActorInputs = this.validateActorInputs.bind(this);
   }
@@ -60,7 +60,7 @@ export class ActorController {
     }
   }
 
-  async deteleActor(req, res) {
+  async deleteActor(req, res) {
     try {
       const id = parseInt(req.params.id);
       const data = await models.Actor.findByPk(id);
