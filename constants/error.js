@@ -5,13 +5,11 @@ export const API_ERROR = {
 };
 
 export const ERROR = {
-  MISSING_ACTOR_NAME: "Missing first name or last name",
   UPDATING_NOT_FOUND_ACTOR: "Actor not found to be updated",
   DELETING_NOT_FOUND_ACTOR: "Actor not found to be deleted",
   NOT_FOUND_ACTOR: "Actor not found",
   INTERNAL_SERVER_ERROR: "Internal server error",
   NOT_FOUND_FILM: "Film not found",
-  MISSING_REQUIRED_FIELDS: "Missing required fields",
   DELETING_NOT_FOUND_FILM: "Film not found to be deleted",
   UPDATING_NOT_FOUND_FILM: "Film not fount to be updated",
   FIRST_NAME_PATTERN:
@@ -28,4 +26,9 @@ export const ERROR = {
   PATH_PARAM_ID_MUST_BE_INT: "ID must be an integer",
   PATH_PARAM_ID_MUST_BE_POSITIVE: "ID must be positive",
   PATH_PARAM_ID_REQUIRED: "ID is required",
+  FILM_TITLE_REQUIRED: "Title is required",
+  FILM_TITLE_LETTER_MIN: "Title must be at least 1 character long",
+  FILM_TITLE_LETTER_MAX: "Title cannot exceed 255 characters",
+  FILM_LANG_MUST_BE_NUM: "Language ID must be a number",
+  FILM_LANG_REQUIRED: "Language ID is required",
 };
