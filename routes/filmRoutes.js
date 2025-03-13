@@ -31,6 +31,14 @@ const controller = new FilmController();
  *              languageId:
  *                 type: integer
  *                 description: Language ID of the film
+ *      FilmUpdate:
+ *          type: object
+ *          required:
+ *              - title
+ *          properties:
+ *              title:
+ *                  type: string
+ *                  description: Title of the film
  *      Error:
  *          type: object
  *          required:
@@ -169,7 +177,7 @@ router.delete("/:id", controller.deleteFilm);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Film'
+ *             $ref: '#/components/schemas/FilmUpdate'
  *     responses:
  *          200:
  *              description: Film updated successfully
