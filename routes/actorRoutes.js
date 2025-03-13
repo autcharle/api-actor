@@ -23,6 +23,18 @@ const controller = new ActorController();
  *              lastName:
  *                  type: string
  *                  description: Last name of the actor
+ *      ActorInput:
+ *          type: object
+ *          required:
+ *              - firstName
+ *              - lastName
+ *          properties:
+ *              firstName:
+ *                  type: string
+ *                  description: First name of the actor
+ *              lastName:
+ *                  type: string
+ *                  description: Last name of the actor
  *      Error:
  *          type: object
  *          required:
@@ -95,7 +107,7 @@ router.get("/:id", controller.getActorById);
  *        content:
  *          application/json:
  *              schema:
- *                  $ref: '#/components/schemas/Actor'
+ *                  $ref: '#/components/schemas/ActorInput'
  *      responses:
  *          201:
  *              description: Actor created successfully
@@ -159,7 +171,7 @@ router.delete("/:id", controller.deleteActor);
  *        content:
  *          application/json:
  *              schema:
- *                  $ref: '#/components/schemas/Actor'
+ *                  $ref: '#/components/schemas/ActorInput'
  *      responses:
  *          200:
  *              description: Actor updated successfully

@@ -5,6 +5,7 @@ import { Response } from "../types/Response.js";
 import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
 import { ERROR } from "../constants/error.js";
 import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
+import { filmSchema } from "../schemas/filmSchema.js";
 
 const models = initModels(sequelize);
 
@@ -14,7 +15,23 @@ export class FilmController {
     this.getFilmById = this.getFilmById.bind(this);
     this.createFilm = this.createFilm.bind(this);
     this.updateFilm = this.updateFilm.bind(this);
-    this.validateFilmInput = this.validateFilmInput.bind(this);
+    this.deleteFilm = this.deleteFilm.bind(this);
+    this.validateRequest = this.validateRequest.bind(this);
+  }
+
+  validateRequest(schema, payload) {
+    const { error } = schema.validate(payload, { abortEarly: false });
+    if (error) {
+      return {
+        isValid: false,
+        errors: error.details.map((detail) => detail.message),
+      };
+    } else {
+      return {
+        isValid: true,
+        errors: null,
+      };
+    }
   }
   /**
    * @swagger
@@ -70,7 +87,11 @@ export class FilmController {
 
   async getFilmById(req, res) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
+      const validation = this.validateRequest(filmSchema.id, { id });
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
+      }
       const data = await models.Film.findByPk(id);
       if (!data) {
         return notFoundResponse(res, ERROR.NOT_FOUND_FILM);
@@ -102,6 +123,12 @@ export class FilmController {
 
   async createFilm(req, res) {
     try {
+      const validation = this.validateRequest(filmSchema.create, req.body);
+
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
+      }
+
       const {
         title,
         description,
@@ -116,9 +143,6 @@ export class FilmController {
         specialFeatures,
       } = req.body;
 
-      if (!this.validateFilmInput(req.body)) {
-        return invalidInputResponse(res, ERROR.MISSING_REQUIRED_FIELDS);
-      }
       const data = await models.Film.create({
         title,
         description,
@@ -161,7 +185,11 @@ export class FilmController {
 
   async deleteFilm(req, res) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
+      const validation = this.validateRequest(filmSchema.id, { id });
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
+      }
       const data = await models.Film.findByPk(id);
 
       if (!data) {
@@ -203,10 +231,15 @@ export class FilmController {
 
   async updateFilm(req, res) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
+      const idValidation = this.validateRequest(filmSchema.id, { id });
+      if (!idValidation.isValid) {
+        return invalidInputResponse(res, idValidation.errors);
+      }
 
-      if (!this.validateFilmInput(req.body)) {
-        return invalidInputResponse(res, ERROR.MISSING_REQUIRED_FIELDS);
+      const bodyValidation = this.validateRequest(filmSchema.update, req.body);
+      if (!bodyValidation.isValid) {
+        return invalidInputResponse(res, bodyValidation.errors);
       }
 
       const film = await models.Film.findByPk(id);
@@ -225,12 +258,5 @@ export class FilmController {
     } catch (error) {
       return handleError(res, error.message);
     }
-  }
-
-  validateFilmInput(input) {
-    const requiredFields = ["title", "languageId"];
-    return requiredFields.every(
-      (field) => input[field] !== undefined && input[field] !== null
-    );
   }
 }
