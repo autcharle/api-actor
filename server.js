@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import actorRoutes from "./routes/actorRoutes.js";
 import filmRoutes from "./routes/filmRoutes.js";
+import languageRoutes from "./routes/languageRoutes.js";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
@@ -21,8 +22,10 @@ server.get("/", async (req, res) => {
 
 const ACTOR_URI = process.env.ACTOR_URI || "/v1/actors";
 const FILM_URI = process.env.FILM_URI || "/v1/films";
+const LANGUAGE_URI = process.env.LANGUAGE_URI || "/v1/languages";
 server.use(ACTOR_URI, actorRoutes);
 server.use(FILM_URI, filmRoutes);
+server.use(LANGUAGE_URI, languageRoutes);
 
 // Error handling middleware
 server.use((err, res, req, next) => {
