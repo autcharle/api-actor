@@ -6,6 +6,7 @@ import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
 import { ERROR } from "../constants/error.js";
 import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
 import { filmSchema } from "../schemas/filmSchema.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const models = initModels(sequelize);
 
@@ -16,7 +17,6 @@ export class FilmController {
     this.createFilm = this.createFilm.bind(this);
     this.updateFilm = this.updateFilm.bind(this);
     this.deleteFilm = this.deleteFilm.bind(this);
-    this.validateRequest = this.validateRequest.bind(this);
   }
 
   validateRequest(schema, payload) {
@@ -46,7 +46,7 @@ export class FilmController {
   async getFilmById(req, res) {
     try {
       const id = req.params.id;
-      const validation = this.validateRequest(filmSchema.id, { id });
+      const validation = validateRequest(filmSchema.id, { id });
       if (!validation.isValid) {
         return invalidInputResponse(res, validation.errors);
       }
@@ -62,7 +62,7 @@ export class FilmController {
 
   async createFilm(req, res) {
     try {
-      const validation = this.validateRequest(filmSchema.create, req.body);
+      const validation = validateRequest(filmSchema.create, req.body);
 
       if (!validation.isValid) {
         return invalidInputResponse(res, validation.errors);
@@ -105,7 +105,7 @@ export class FilmController {
   async deleteFilm(req, res) {
     try {
       const id = req.params.id;
-      const validation = this.validateRequest(filmSchema.id, { id });
+      const validation = validateRequest(filmSchema.id, { id });
       if (!validation.isValid) {
         return invalidInputResponse(res, validation.errors);
       }
@@ -125,12 +125,12 @@ export class FilmController {
   async updateFilm(req, res) {
     try {
       const id = req.params.id;
-      const idValidation = this.validateRequest(filmSchema.id, { id });
+      const idValidation = validateRequest(filmSchema.id, { id });
       if (!idValidation.isValid) {
         return invalidInputResponse(res, idValidation.errors);
       }
 
-      const bodyValidation = this.validateRequest(filmSchema.update, req.body);
+      const bodyValidation = validateRequest(filmSchema.update, req.body);
       if (!bodyValidation.isValid) {
         return invalidInputResponse(res, bodyValidation.errors);
       }

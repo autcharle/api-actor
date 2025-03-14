@@ -6,6 +6,7 @@ import { handleError } from "../middleware/handleError.js";
 import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
 import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
 import { actorSchema } from "../schemas/actorSchema.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const models = initModels(sequelize);
 
@@ -16,22 +17,6 @@ export class ActorController {
     this.createActor = this.createActor.bind(this);
     this.deleteActor = this.deleteActor.bind(this);
     this.updateActor = this.updateActor.bind(this);
-    this.validateRequest = this.validateRequest.bind(this);
-  }
-
-  validateRequest(schema, payload) {
-    const { error } = schema.validate(payload, { abortEarly: false });
-    if (error) {
-      return {
-        isValid: false,
-        errors: error.details.map((detail) => detail.message),
-      };
-    } else {
-      return {
-        isValid: true,
-        errors: null,
-      };
-    }
   }
 
   async getAllActors(req, res) {
@@ -46,7 +31,7 @@ export class ActorController {
   async getActorById(req, res) {
     try {
       const id = req.params.id;
-      const validation = this.validateRequest(actorSchema.id, {
+      const validation = validateRequest(actorSchema.id, {
         id,
       });
       if (!validation.isValid) {
@@ -66,7 +51,7 @@ export class ActorController {
 
   async createActor(req, res) {
     try {
-      const validation = this.validateRequest(actorSchema.create, req.body);
+      const validation = validateRequest(actorSchema.create, req.body);
       if (!validation.isValid) {
         return invalidInputResponse(res, validation.errors);
       }
@@ -87,7 +72,7 @@ export class ActorController {
   async deleteActor(req, res) {
     try {
       const id = req.params.id;
-      const validation = this.validateRequest(actorSchema.id, {
+      const validation = validateRequest(actorSchema.id, {
         id,
       });
       if (!validation.isValid) {
@@ -109,7 +94,7 @@ export class ActorController {
   async updateActor(req, res) {
     try {
       const id = req.params.id;
-      const idValidation = this.validateRequest(actorSchema.id, {
+      const idValidation = validateRequest(actorSchema.id, {
         id,
       });
       if (!idValidation.isValid) {
@@ -122,7 +107,7 @@ export class ActorController {
         return notFoundResponse(res, ERROR.UPDATING_NOT_FOUND_ACTOR);
       }
 
-      const bodyValidation = this.validateRequest(actorSchema.update, req.body);
+      const bodyValidation = validateRequest(actorSchema.update, req.body);
       if (!bodyValidation.isValid) {
         return invalidInputResponse(res, bodyValidation.errors);
       }
