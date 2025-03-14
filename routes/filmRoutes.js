@@ -12,90 +12,118 @@ const controller = new FilmController();
  *          type: object
  *          required:
  *              - title
- *          properties:
- *              filmId:
- *                 type: integer
- *                 description: Auto-generated ID of the film
- *              title:
- *                  type: string
- *                  description: Title of the film
- *      FilmInput:
- *          type: object
- *          required:
- *              - title
  *              - languageId
  *          properties:
+ *              filmId:
+ *                  type: integer
+ *                  readOnly: true
+ *                  minimum: 1
  *              title:
  *                  type: string
- *                  description: Title of the film
+ *                  minLength: 1
+ *                  maxLength: 255
+ *              description:
+ *                  type: string
+ *                  nullable: true
+ *              releaseYear:
+ *                  type: integer
+ *                  minimum: 1900
+ *                  maximum: 2099
+ *                  example: 2025
+ *                  nullable: true
  *              languageId:
- *                 type: integer
- *                 description: Language ID of the film
- *      FilmUpdate:
- *          type: object
- *          required:
- *              - title
- *          properties:
- *              title:
+ *                  type: integer
+ *                  minimum: 1
+ *              originalLanguageId:
+ *                  type: integer
+ *                  minimum: 1
+ *                  nullable: true
+ *              rentalDuration:
+ *                  type: integer
+ *                  minimum: 1
+ *                  default: 3
+ *              rentalRate:
+ *                  type: number
+ *                  format: float
+ *                  minimum: 0
+ *                  default: 4.99
+ *              length:
+ *                  type: integer
+ *                  minimum: 1
+ *                  nullable: true
+ *              replacementCost:
+ *                  type: number
+ *                  format: float
+ *                  minimum: 0
+ *                  default: 19.99
+ *              rating:
  *                  type: string
- *                  description: Title of the film
- *      Error:
- *          type: object
- *          required:
- *              - errorId
- *              - message
- *          properties:
- *              errorId:
+ *                  enum: [G, PG, PG-13, R, NC-17]
+ *                  nullable: true
+ *              specialFeatures:
  *                  type: string
- *                  description: Error code of errors
- *              message:
+ *                  nullable: true
+ *                  example: null
+ *              lastUpdate:
  *                  type: string
- *                  description: Error message of errors
- *         
+ *                  format: date-time
+ *                  readOnly: true
  */
-
 
 /**
  * @swagger
  * /v1/films:
  *  get:
- *      summary: Returns a list of all films
+ *      summary: Get all films
  *      tags: [Films]
  *      responses:
  *          200:
- *              description: List of films
+ *              description: Retrieve all films successfully
  *              content:
  *                  application/json:
  *                      schema:
  *                          type: array
  *                          items:
  *                              $ref: '#/components/schemas/Film'
+ *          500:
+ *              description: Internal Server Error
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
  */
 router.get("/", controller.getAllFilms);
 
 /**
  * @swagger
  * /v1/films/{id}:
- *   get:
- *     summary: Get film by ID
- *     tags: [Films]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Film ID
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Film found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/FilmInput'
- *       404:
- *          description: Film not found
- *          content:
+ *  get:
+ *      summary: Get film by ID
+ *      tags: [Films]
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            schema:
+ *              type: integer
+ *              minimum: 1
+ *            description: Film ID
+ *      responses:
+ *          200:
+ *              description: Retrieve film successfully
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Film'
+ *          404:
+ *              description: Film not found
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ *          500:
+ *              description: Internal Server Error
+ *              content:
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
@@ -105,16 +133,16 @@ router.get("/:id", controller.getFilmById);
 /**
  * @swagger
  * /v1/films:
- *   post:
- *     summary: Create a new film
- *     tags: [Films]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/FilmInput'
- *     responses:
+ *  post:
+ *      summary: Create a new film
+ *      tags: [Films]
+ *      requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Film'
+ *      responses:
  *          201:
  *              description: Film created successfully
  *              content:
@@ -127,23 +155,30 @@ router.get("/:id", controller.getFilmById);
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
+ *          500:
+ *              description: Internal Server Error
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
  */
 router.post("/", controller.createFilm);
 
 /**
  * @swagger
  * /v1/films/{id}:
- *   delete:
- *     summary: Delete a film
- *     tags: [Films]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Film ID
- *         schema:
- *           type: integer
- *     responses:
+ *  delete:
+ *      summary: Delete film by ID
+ *      tags: [Films]
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            schema:
+ *              type: integer
+ *              minimum: 1
+ *            description: Film ID
+ *      responses:
  *          200:
  *              description: Film deleted successfully
  *              content:
@@ -151,7 +186,13 @@ router.post("/", controller.createFilm);
  *                      schema:
  *                          $ref: '#/components/schemas/Film'
  *          404:
- *              description: Film not found to be deleted
+ *              description: Film not found
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ *          500:
+ *              description: Internal Server Error
  *              content:
  *                  application/json:
  *                      schema:
@@ -162,23 +203,24 @@ router.delete("/:id", controller.deleteFilm);
 /**
  * @swagger
  * /v1/films/{id}:
- *   put:
- *     summary: Update a film
- *     tags: [Films]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: Film ID
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/FilmUpdate'
- *     responses:
+ *  put:
+ *      summary: Update film by ID
+ *      tags: [Films]
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            required: true
+ *            schema:
+ *              type: integer
+ *              minimum: 1
+ *            description: Film ID
+ *      requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Film'
+ *      responses:
  *          200:
  *              description: Film updated successfully
  *              content:
@@ -191,8 +233,8 @@ router.delete("/:id", controller.deleteFilm);
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
- *          404:
- *              description: Film not found to be updated
+ *          500:
+ *              description: Internal Server Error
  *              content:
  *                  application/json:
  *                      schema:

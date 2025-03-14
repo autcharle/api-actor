@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import db from "./utils/database.js";
 import bodyParser from "body-parser";
@@ -8,9 +7,7 @@ import filmRoutes from "./routes/filmRoutes.js";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
-import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { swaggerConfig } from "./swagger/swagger.config.js";
 import fs from "fs";
 import yaml from "yamljs";
 

@@ -15,7 +15,9 @@ const controller = new ActorController();
  *              - lastName
  *          properties:
  *              actorId:
- *                  type: string
+ *                  type: integer
+ *                  minimum: 1
+ *                  readOnly: true
  *                  description: Auto-generated ID of the actor
  *              firstName:
  *                  type: string
@@ -23,6 +25,10 @@ const controller = new ActorController();
  *              lastName:
  *                  type: string
  *                  description: Last name of the actor
+ *              lastUpdate:
+ *                  type: string
+ *                  format: date-time
+ *                  readOnly: true
  *      ActorInput:
  *          type: object
  *          required:
