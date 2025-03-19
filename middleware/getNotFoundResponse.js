@@ -5,7 +5,7 @@ import { Response } from "../types/Response.js";
 API_ERROR;
 
 export const notFoundResponse = (res, msg) => {
-  return res.status(200).json(
+  return res.status(404).json(
     new Response({
       data: null,
       errors: [

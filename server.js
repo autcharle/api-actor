@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import db from "./utils/database.js";
 import bodyParser from "body-parser";
@@ -8,11 +7,22 @@ import filmRoutes from "./routes/filmRoutes.js";
 import { Response } from "./types/Response.js";
 import { Error } from "./types/Error.js";
 import { API_ERROR, ERROR } from "./constants/error.js";
+import swaggerUi from "swagger-ui-express";
+import fs from "fs";
+import yaml from "yamljs";
 
 const server = express();
+const PORT = process.env.PORT || 3000;
+
+const swaggerDocs = yaml.parse(
+  fs.readFileSync("./api/api-actor.swagger.yaml", "utf8")
+);
 
 server.use(bodyParser.json());
 server.use(cors());
+if (process.env.NODE_ENV === "development") {
+  server.use("/v1/swagger-api", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+}
 
 server.get("/", async (req, res) => {
   const data = await db.execute("SELECT first_name, last_name FROM actor");
@@ -40,7 +50,7 @@ server.use((err, res, req, next) => {
   );
 });
 
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Swagger API documentation available at /v1/swagger-api`);
 });

@@ -5,6 +5,8 @@ import { ERROR } from "../constants/error.js";
 import { handleError } from "../middleware/handleError.js";
 import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
 import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
+import { actorSchema } from "../schemas/actorSchema.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const models = initModels(sequelize);
 
@@ -13,9 +15,8 @@ export class ActorController {
     this.getAllActors = this.getAllActors.bind(this);
     this.getActorById = this.getActorById.bind(this);
     this.createActor = this.createActor.bind(this);
-    this.deteleActor = this.deteleActor.bind(this);
+    this.deleteActor = this.deleteActor.bind(this);
     this.updateActor = this.updateActor.bind(this);
-    this.validateActorInputs = this.validateActorInputs.bind(this);
   }
 
   async getAllActors(req, res) {
@@ -29,7 +30,14 @@ export class ActorController {
 
   async getActorById(req, res) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
+      const validation = validateRequest(actorSchema.id, {
+        id,
+      });
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
+      }
+
       const data = await models.Actor.findByPk(id);
 
       if (!data) {
@@ -43,11 +51,12 @@ export class ActorController {
 
   async createActor(req, res) {
     try {
-      const { firstName, lastName } = req.body;
-      if (!this.validateActorInputs(firstName, lastName)) {
-        return invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
+      const validation = validateRequest(actorSchema.create, req.body);
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
       }
 
+      const { firstName, lastName } = req.body;
       const data = await models.Actor.create({
         firstName: firstName,
         lastName: lastName,
@@ -60,9 +69,15 @@ export class ActorController {
     }
   }
 
-  async deteleActor(req, res) {
+  async deleteActor(req, res) {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
+      const validation = validateRequest(actorSchema.id, {
+        id,
+      });
+      if (!validation.isValid) {
+        return invalidInputResponse(res, validation.errors);
+      }
       const data = await models.Actor.findByPk(id);
 
       if (data) {
@@ -78,17 +93,23 @@ export class ActorController {
 
   async updateActor(req, res) {
     try {
-      const id = parseInt(req.params.id);
-      const { firstName, lastName } = req.body;
-
-      if (!this.validateActorInputs(firstName, lastName)) {
-        return invalidInputResponse(res, ERROR.MISSING_ACTOR_NAME);
+      const id = req.params.id;
+      const idValidation = validateRequest(actorSchema.id, {
+        id,
+      });
+      if (!idValidation.isValid) {
+        return invalidInputResponse(res, idValidation.errors);
       }
 
       const actor = await models.Actor.findByPk(id);
 
       if (!actor) {
         return notFoundResponse(res, ERROR.UPDATING_NOT_FOUND_ACTOR);
+      }
+
+      const bodyValidation = validateRequest(actorSchema.update, req.body);
+      if (!bodyValidation.isValid) {
+        return invalidInputResponse(res, bodyValidation.errors);
       }
 
       const updateData = { ...req.body, lastUpdate: new Date() };
@@ -98,10 +119,5 @@ export class ActorController {
     } catch (error) {
       return handleError(res, error.message);
     }
-  }
-
-  // Client validation methods
-  validateActorInputs(firstName, lastName) {
-    return firstName && lastName;
   }
 }
