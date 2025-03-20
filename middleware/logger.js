@@ -1,4 +1,5 @@
 import winston from "winston";
+import "winston-daily-rotate-file";
 const { combine, timestamp, printf, colorize, align, json } = winston.format;
 
 const logFormat = combine(
@@ -25,6 +26,14 @@ export const logger = winston.createLogger({
     }),
     new winston.transports.File({
       filename: "logs/express.log",
+      format: combine(timestamp(), json()),
+    }),
+    new winston.transports.DailyRotateFile({
+      filename: "logs/express-%DATE%.log",
+      datePattern: "YYYY-MM-DD",
+      zippedArchive: true,
+      maxSize: "20m",
+      maxFiles: "14d",
       format: combine(timestamp(), json()),
     }),
   ],
