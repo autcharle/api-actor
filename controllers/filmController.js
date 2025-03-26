@@ -1,12 +1,12 @@
 import sequelize from "../utils/helper.js";
 import initModels from "../models/init-models.js";
-import { handleError } from "../middleware/handleError.js";
+import { handleError } from "../middlewares/handleError.js";
 import { Response } from "../types/Response.js";
-import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
+import { notFoundResponse } from "../middlewares/getNotFoundResponse.js";
 import { ERROR } from "../constants/error.js";
-import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
+import { invalidInputResponse } from "../middlewares/getInvalidInputResponse.js";
 import { filmSchema } from "../schemas/filmSchema.js";
-import { validateRequest } from "../middleware/validateRequest.js";
+import { validateRequest } from "../middlewares/validateRequest.js";
 
 const models = initModels(sequelize);
 
