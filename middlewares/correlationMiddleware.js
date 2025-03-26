@@ -1,6 +1,5 @@
 import { v4 as uuids4 } from "uuid";
 import cls from "cls-hooked";
-import { logger } from "./logger.js";
 
 const namespace = cls.createNamespace("request-context");
 

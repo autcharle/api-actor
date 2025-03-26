@@ -4,13 +4,14 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import actorRoutes from "./routes/actorRoutes.js";
 import filmRoutes from "./routes/filmRoutes.js";
+import staffRoutes from "./routes/staffRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import yaml from "yamljs";
-import { requestLogger } from "./middleware/requestLogger.js";
-import { handleFailure } from "./middleware/handleFailure.js";
-import { correlationMiddleware } from "./middleware/correlationMiddleware.js";
-import { responseInterceptor } from "./middleware/responseInterceptor.js";
+import { requestLogger } from "./middlewares/requestLogger.js";
+import { handleFailure } from "./middlewares/handleFailure.js";
+import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
+import { responseInterceptor } from "./middlewares/responseInterceptor.js";
 
 const server = express();
 const PORT = process.env.PORT || 3000;
@@ -37,8 +38,10 @@ server.get("/", async (req, res) => {
 
 const ACTOR_URI = process.env.ACTOR_URI || "/v1/actors";
 const FILM_URI = process.env.FILM_URI || "/v1/films";
+const STAFF_URI = process.env.STAFF_URI || "/v1/auth/token";
 server.use(ACTOR_URI, actorRoutes);
 server.use(FILM_URI, filmRoutes);
+server.use(STAFF_URI, staffRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
