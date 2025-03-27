@@ -20,6 +20,8 @@ export class StaffController {
       if (!data) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
+      // const hashedPassword = bcrypt.hashSync(password, 10);
+      // console.log("pass ne: ", hashedPassword);
       bcrypt.compare(password, data.password, (err, result) => {
         if (err) {
           return res.status(500).json({ message: "Error comparing password" });
@@ -33,7 +35,7 @@ export class StaffController {
         const token = jwt.sign(
           { userId: data.staffId, username: data.username }, // Payload
           JWT_SECRET_KEY, // Secret key
-          { expiresIn: "3m" } // Token expiration (e.g., 1 hour)
+          { expiresIn: "5m" } // Token expiration (e.g., 1 hour)
         );
 
         // Successful login
