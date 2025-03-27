@@ -7,6 +7,8 @@ import { ERROR } from "../constants/error.js";
 import { invalidInputResponse } from "../middlewares/getInvalidInputResponse.js";
 import { filmSchema } from "../schemas/filmSchema.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
+import axios from "axios";
+import { generateSecretKey } from "../middlewares/generateSecretKey.js";
 
 const models = initModels(sequelize);
 
@@ -31,6 +33,27 @@ export class FilmController {
         isValid: true,
         errors: null,
       };
+    }
+  }
+
+  async getAllFilmsBff(req, res) {
+    try {
+      const requestUrl = process.env.FILM_URI_SERVER; // The URL to be requested on the server
+      const timestamp = Date.now().toString(); // Get current timestamp
+      const generatedSecretKey = generateSecretKey(requestUrl, timestamp); // Generate dynamic secret key
+      console.log("client side token: ", generatedSecretKey);
+      const response = await axios.get(
+        `${process.env.EXPRESS_URL}${process.env.FILM_URI_SERVER}`,
+        {
+          headers: {
+            "x-api-key": `${generatedSecretKey}`,
+            timestamp,
+          },
+        }
+      );
+      return res.json(new Response(response.data));
+    } catch (error) {
+      return handleError(res, error.message);
     }
   }
 
