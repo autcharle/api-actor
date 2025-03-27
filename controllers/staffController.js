@@ -2,18 +2,17 @@ import sequelize from "../utils/helper.js";
 import initModels from "../models/init-models.js";
 import { handleError } from "../middlewares/handleError.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { generateAccessToken } from "../middlewares/generateAccessToken.js";
+import { generateRefreshToken } from "../middlewares/generateRefreshToken.js";
 
 const models = initModels(sequelize);
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "National";
-
 export class StaffController {
   constructor() {
-    this.getStaffByCredentials = this.getStaffByCredentials.bind(this);
+    this.getCredentialsByStaff = this.getCredentialsByStaff.bind(this);
   }
 
-  async getStaffByCredentials(req, res) {
+  async getCredentialsByStaff(req, res) {
     const { username, password } = req.body;
     try {
       const data = await models.Staff.findOne({ where: { username } });
@@ -22,7 +21,7 @@ export class StaffController {
       }
       // const hashedPassword = bcrypt.hashSync(password, 10);
       // console.log("pass ne: ", hashedPassword);
-      bcrypt.compare(password, data.password, (err, result) => {
+      bcrypt.compare(password, data.password, async (err, result) => {
         if (err) {
           return res.status(500).json({ message: "Error comparing password" });
         }
@@ -32,17 +31,28 @@ export class StaffController {
         }
 
         // Generate a JWT token
-        const token = jwt.sign(
-          { userId: data.staffId, username: data.username }, // Payload
-          JWT_SECRET_KEY, // Secret key
-          { expiresIn: "5m" } // Token expiration (e.g., 1 hour)
-        );
+        const acToken = generateAccessToken({
+          userId: data.staffId,
+          username: data.username,
+        });
+
+        console.log("access token ne: ", acToken);
+
+        const rfToken = generateRefreshToken({
+          userId: data.staffId,
+          username: data.username,
+        });
+
+        console.log("refresh token ne: ", rfToken);
+
+        await data.update({ rfToken: rfToken, lastUpdate: new Date() });
 
         // Successful login
-        res.status(200).json({
-          message: "Login successful",
-          token: token, // Access token
-          user: { username: data.username },
+        return res.status(200).json({
+          token_type: "Bearer",
+          access_token: acToken, // Access token
+          expires_in: 300,
+          refresh_token: rfToken, // Refresh token
         });
       });
     } catch (error) {
