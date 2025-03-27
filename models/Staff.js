@@ -49,6 +49,11 @@ export default class Staff extends Model {
           defaultValue: Sequelize.Sequelize.literal("CURRENT_TIMESTAMP"),
           field: "last_update",
         },
+        rfToken: {
+          type: DataTypes.STRING(256),
+          allowNull: true,
+          field: "rf_token",
+        },
       },
       {
         sequelize,

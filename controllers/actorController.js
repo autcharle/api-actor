@@ -39,7 +39,6 @@ export class ActorController {
       }
 
       const data = await models.Actor.findByPk(id);
-      console.log("data ne: ", data);
 
       if (!data) {
         return notFoundResponse(res, ERROR.NOT_FOUND_ACTOR);
