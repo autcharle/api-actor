@@ -13,9 +13,9 @@ export class StaffController {
   }
 
   async getCredentialsByStaff(req, res) {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     try {
-      const data = await models.Staff.findOne({ where: { username } });
+      const data = await models.Staff.findOne({ where: { email } });
       if (!data) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -33,14 +33,14 @@ export class StaffController {
         // Generate a JWT token
         const acToken = generateAccessToken({
           userId: data.staffId,
-          username: data.username,
+          email: data.email,
         });
 
         console.log("access token ne: ", acToken);
 
         const rfToken = generateRefreshToken({
           userId: data.staffId,
-          username: data.username,
+          email: data.email,
         });
 
         console.log("refresh token ne: ", rfToken);
