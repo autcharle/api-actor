@@ -1,6 +1,5 @@
 import express from "express";
 import { ActorController } from "../controllers/actorController.js";
-import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 const controller = new ActorController();
@@ -72,7 +71,7 @@ const controller = new ActorController();
  *                          items:
  *                              $ref: '#/components/schemas/Actor'
  */
-router.get("/", authenticateToken, controller.getAllActors);
+router.get("/", controller.getAllActors);
 
 /**
  * @swagger
@@ -101,7 +100,7 @@ router.get("/", authenticateToken, controller.getAllActors);
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
  */
-router.get("/:id", authenticateToken, controller.getActorById);
+router.get("/:id", controller.getActorById);
 
 /**
  * @swagger

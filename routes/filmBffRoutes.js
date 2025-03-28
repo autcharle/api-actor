@@ -1,6 +1,5 @@
 import express from "express";
 import { FilmController } from "../controllers/filmController.js";
-import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 const controller = new FilmController();
@@ -27,6 +26,6 @@ const controller = new FilmController();
  *                      schema:
  *                          $ref: '#/components/schemas/Error'
  */
-router.get("/", authenticateToken, controller.getAllFilmsBff);
+router.get("/", controller.getAllFilmsBff);
 
 export default router;
