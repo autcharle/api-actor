@@ -18,7 +18,7 @@ export const authenticateSecretKey = (req, res, next) => {
   if (timestampDifference > TIMESTAMP_WINDOW) {
     return res
       .status(400)
-      .json({ error: "Request expired. Timestamp is older than 3 minutes." });
+      .json({ error: "Request expired. Timestamp is older than 1 minutes." });
   }
 
   const generatedSecretKey = generateSecretKey(requestUrl, clientTimestamp); // Generate dynamic secret key

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const SECRET_KEY = process.env.SERVER_SECRET;
 
 // Function to generate dynamic secret key based on time, URL, and predefined key
 export const generateSecretKey = (requestUrl, timestamp) => {

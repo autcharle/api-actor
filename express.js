@@ -8,7 +8,7 @@ import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
 import { responseInterceptor } from "./middlewares/responseInterceptor.js";
 
 const server = express();
-const PORT = process.env.PORT_EXPRESS || 8080;
+const PORT = process.env.PORT_SERVER || 8080;
 
 server.use(bodyParser.json());
 server.use(cors());

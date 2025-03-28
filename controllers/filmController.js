@@ -43,7 +43,7 @@ export class FilmController {
       const generatedSecretKey = generateSecretKey(requestUrl, timestamp); // Generate dynamic secret key
       console.log("client side token: ", generatedSecretKey);
       const response = await axios.get(
-        `${process.env.EXPRESS_URL}${process.env.FILM_URI_SERVER}`,
+        `${process.env.SERVER_URL}${process.env.FILM_URI_SERVER}`,
         {
           headers: {
             "x-api-key": `${generatedSecretKey}`,
