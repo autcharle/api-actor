@@ -3,7 +3,6 @@ import initModels from "../models/init-models.js";
 import { handleError } from "../middlewares/handleError.js";
 import bcrypt from "bcryptjs";
 import { generateAccessToken } from "../middlewares/generateAccessToken.js";
-import { generateRefreshToken } from "../middlewares/generateRefreshToken.js";
 
 const models = initModels(sequelize);
 
@@ -38,21 +37,11 @@ export class StaffController {
 
         console.log("access token ne: ", acToken);
 
-        const rfToken = generateRefreshToken({
-          userId: data.staffId,
-          email: data.email,
-        });
-
-        console.log("refresh token ne: ", rfToken);
-
-        await data.update({ rfToken: rfToken, lastUpdate: new Date() });
-
         // Successful login
         return res.status(200).json({
           token_type: "Bearer",
           access_token: acToken, // Access token
           expires_in: 300,
-          refresh_token: rfToken, // Refresh token
         });
       });
     } catch (error) {
