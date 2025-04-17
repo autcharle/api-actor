@@ -2,11 +2,11 @@ import sequelize from "../utils/helper.js";
 import initModels from "../models/init-models.js";
 import { Response } from "../types/Response.js";
 import { ERROR } from "../constants/error.js";
-import { handleError } from "../middleware/handleError.js";
-import { notFoundResponse } from "../middleware/getNotFoundResponse.js";
-import { invalidInputResponse } from "../middleware/getInvalidInputResponse.js";
+import { handleError } from "../middlewares/handleError.js";
+import { notFoundResponse } from "../middlewares/getNotFoundResponse.js";
+import { invalidInputResponse } from "../middlewares/getInvalidInputResponse.js";
 import { actorSchema } from "../schemas/actorSchema.js";
-import { validateRequest } from "../middleware/validateRequest.js";
+import { validateRequest } from "../middlewares/validateRequest.js";
 
 const models = initModels(sequelize);
 
