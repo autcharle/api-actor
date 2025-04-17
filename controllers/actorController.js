@@ -21,6 +21,7 @@ export class ActorController {
 
   async getAllActors(req, res) {
     try {
+      console.log("📡 Received GET /v1/actors");
       const data = await models.Actor.findAll();
       return res.json(new Response({ data, errors: null }));
     } catch (error) {
@@ -62,6 +63,9 @@ export class ActorController {
         lastName: lastName,
         lastUpdate: Date.now(),
       });
+
+      console.log("Emitting new-actor event:", data);
+      req.io.emit("new-actor", data);
 
       return res.status(201).json(new Response({ data, errors: null }));
     } catch (error) {
