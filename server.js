@@ -12,8 +12,6 @@ import { requestLogger } from "./middlewares/requestLogger.js";
 import { handleFailure } from "./middlewares/handleFailure.js";
 import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
 import { responseInterceptor } from "./middlewares/responseInterceptor.js";
-import { Server } from "socket.io";
-import http from "http";
 import { initSocket } from "./utils/socket.js";
 
 const server = express();
