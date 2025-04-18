@@ -14,24 +14,12 @@ import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
 import { responseInterceptor } from "./middlewares/responseInterceptor.js";
 import { Server } from "socket.io";
 import http from "http";
+import { initSocket } from "./utils/socket.js";
 
 const server = express();
-const httpServer = http.createServer(server);
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL, // 👈 client URL (Vite, etc.)
-    methods: ["GET", "POST"],
-  },
-});
 const PORT = process.env.PORT || 8000;
 
-io.on("connection", (socket) => {
-  console.log("New client connected");
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+const { io, httpServer } = initSocket(server);
 
 const swaggerDocs = yaml.parse(
   fs.readFileSync("./api/api-actor.swagger.yaml", "utf8")
@@ -56,6 +44,7 @@ server.get("/", async (req, res) => {
 const ACTOR_URI = process.env.ACTOR_URI || "/v1/actors";
 const FILM_URI = process.env.FILM_URI || "/v1/films-bff";
 const STAFF_URI = process.env.STAFF_URI || "/v1/auth/token";
+
 // Pass io to routes
 server.use((req, res, next) => {
   req.io = io;
