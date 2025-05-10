@@ -14,7 +14,7 @@ import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
 import { responseInterceptor } from "./middlewares/responseInterceptor.js";
 
 const server = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 const swaggerDocs = yaml.parse(
   fs.readFileSync("./api/api-actor.swagger.yaml", "utf8")
