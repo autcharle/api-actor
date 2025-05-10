@@ -12,9 +12,12 @@ import { requestLogger } from "./middlewares/requestLogger.js";
 import { handleFailure } from "./middlewares/handleFailure.js";
 import { correlationMiddleware } from "./middlewares/correlationMiddleware.js";
 import { responseInterceptor } from "./middlewares/responseInterceptor.js";
+import { initSocket } from "./utils/socket.js";
 
 const server = express();
 const PORT = process.env.PORT || 8000;
+
+const { io, httpServer } = initSocket(server);
 
 const swaggerDocs = yaml.parse(
   fs.readFileSync("./api/api-actor.swagger.yaml", "utf8")
@@ -39,11 +42,28 @@ server.get("/", async (req, res) => {
 const ACTOR_URI = process.env.ACTOR_URI || "/v1/actors";
 const FILM_URI = process.env.FILM_URI || "/v1/films-bff";
 const STAFF_URI = process.env.STAFF_URI || "/v1/auth/token";
+
+// Pass io to routes
+server.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+setTimeout(() => {
+  io.emit("new-actor", {
+    actorId: 123,
+    firstName: "Test",
+    lastName: "RealTime",
+    lastUpdate: new Date(),
+  });
+  console.log("✅ Emitted test new-actor");
+}, 5000);
+
 server.use(ACTOR_URI, actorRoutes);
 server.use(FILM_URI, filmRoutes);
 server.use(STAFF_URI, staffRoutes);
 
-server.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Swagger API documentation available at /v1/swagger-api`);
 });
